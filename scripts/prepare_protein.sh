@@ -46,12 +46,17 @@ if $E_ARG; then
         -out:path:pdb input_protein \
         -out:path:score input_protein \
         -overwrite
-    mv ${P_ARG%.*}_relax_0001.pdb ${P_ARG%.*}_relaxed.pdb
+    mv ${P_ARG%.*}_relax.pdb ${P_ARG%.*}_relaxed.pdb
 
 else
-    center=$(python3 ${SCRIPTS}/center.py ${L_ARG})
+    python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ${L_ARG} \
+        -p ${L_ARG%.*} \
+        --mm-as-virt \
+        --chain X \
+        --clobber
+    center=$(python3 ${SCRIPTS}/center.py ${L_ARG%.*}_0001.pdb)
     center=(${center//,/ })
-    cat ${P_ARG} ${L_ARG} > ${P_ARG%.*}_relax.pdb
+    cat ${P_ARG} ${L_ARG%.*}_0001.pdb > ${P_ARG%.*}_relax.pdb
 
     mpirun -np 10 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
         -s ${P_ARG%.*}_relax.pdb \
@@ -63,8 +68,9 @@ else
         -out:path:score input_protein \
         -overwrite \
         -parser:script_vars x=${center[0]} y=${center[1]} z=${center[2]}
-    python3 ${SCRIPTS}/remove_ligand.py ${P_ARG%.*}_relax_relax_0001.pdb "X"
-    mv ${P_ARG%.*}_relax_relax_0001.pdb ${P_ARG%.*}_relaxed.pdb
+    python3 ${SCRIPTS}/extract_ligand.py ${P_ARG%.*}_relax_relax_0001.pdb --remove_chain
+    mv protein.pdb ${P_ARG%.*}_relaxed_withligand.pdb
+    rm ${P_ARG%.*}_relax_relax_0001.pdb
 fi
 
 

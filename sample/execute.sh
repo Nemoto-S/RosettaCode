@@ -11,6 +11,17 @@ bash ConformerGenerator.sh
 bash ${SCRIPTS}/prepare_protein.sh -p input_protein/2yfe_protein.pdb -e
 
 # docking
+# Rosettaの諸関数にリガンドを適用したい場合は以下のスクリプトで.paramsファイルの生成が必要
+python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py \
+    input_ligand/2yfe_ligand.sdf \
+    -p input_ligand/2yfe_ligand \
+    --mm-as-virt \
+    --chain X \
+    --clobber
+# determine ligand center
+center=$(python3 ${SCRIPTS}/center.py input_ligand/2yfe_ligand.pdb)
+center=(${center//,/ })
+
 for P in input_ligand/*.sdf; do
     python3 ${SCRIPTS}/sdf_split.py $P -n 1
     for P2 in ${P%.*}_*.sdf; do
@@ -19,9 +30,7 @@ for P in input_ligand/*.sdf; do
             -p ligand_chain_X \
             --mm-as-virt \
             --chain X \
-            --clobber
-        # リガンド中心の座標が欲しい場合↓
-        # python3 ${SCRIPTS}/center.py ${P2} (center.py参照)
+            --clobber        
         
         cat input_protein/2yfe_protein_relaxed.pdb ligand_chain_X_0001.pdb > dock.pdb
         mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
@@ -38,7 +47,8 @@ for P in input_ligand/*.sdf; do
             -overwrite \
             -mistakes:restore_pre_talaris_2013_behavior true \
             -nstruct 50 \
-            -score:analytic_etable_evaluation true 
+            -score:analytic_etable_evaluation true \
+            -parser:script_vars x=${center[0]} y=${center[1]} z=${center[2]}
         rm ligand_chain_X.*
         rm $P2
     done
