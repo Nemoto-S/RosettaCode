@@ -21,10 +21,11 @@ def main(args):
             extract.append(v)
     if args.remove_chain:
         pr = []
-        for v in lines:
+        for j,v in enumerate(lines):
             pr.append(v)
             if v.startswith("TER"):
-                break
+                if not lines[j+1].startswith("ATOM"):
+                    break
         with open("protein.pdb","wt") as f:
             f.write("\n".join(pr))
 

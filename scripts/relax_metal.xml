@@ -1,0 +1,17 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+        <ScoreFunction name="r15_cst" weights="ref2015_cst.wts">
+            <Reweight scoretype="metalbinding_constraint" weight="1.0"/>
+        </ScoreFunction>
+    </SCOREFXNS>
+	<MOVERS>
+        <SetupMetalsMover name="setup_metals" metals_detection_LJ_multiplier="1.0"/>
+		<FastRelax name="fast_relax" scorefxn="r15_cst" repeats="5"/>
+	</MOVERS>
+
+	<PROTOCOLS>
+        <Add mover="setup_metals"/>
+		<Add mover_name="fast_relax"/>
+	</PROTOCOLS>
+	
+</ROSETTASCRIPTS>

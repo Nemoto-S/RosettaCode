@@ -23,7 +23,7 @@
 1. Relax
     - タンパク質をligand freeな状態でエネルギー最適化する
     - ligandを入れた状態での最適化も可能 (240228 induced fitとの違いは分かっていない)
-    - `scripts/prepare_protein.sh`を参照
+    - `prepare_protein.sh`を参照
 
 ### Ligand Docking
 

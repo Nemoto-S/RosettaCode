@@ -8,8 +8,8 @@ mkdir output
 mkdir output2
 mkdir output3
 mkdir output_dock
-mkdir output_dock2
-mkdir output_dock3
+mkdir output2_dock
+mkdir output3_dock
 
 # ligand preparation
 bash ConformerGenerator.sh
@@ -83,7 +83,7 @@ for P in output_dock/*.pdb; do
         -extra_res_fa ligand_chain_X.params \
         -out:file:scorefile output2/${LA##*/}.sc \
         -out:pdb true \
-        -out:prefix output_dock2/${LA##*/}_ \
+        -out:prefix output2_dock/${LA##*/}_ \
         -packing:ex1 \
         -packing:ex2 \
         -packing:no_optH \
@@ -102,7 +102,7 @@ python3 ${SCRIPTS}/select_score.py \
     --number 10
 
 # 3rd docking
-for P in output_dock2/*.pdb; do
+for P in output2_dock/*.pdb; do
     PA=${P%.*}
     python3 ${SCRIPTS}/extract_ligand.py $P --remove_chain
     python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ligand_chain_X.sdf \
@@ -116,7 +116,7 @@ for P in output_dock2/*.pdb; do
         -extra_res_fa ligand_chain_X.params \
         -out:file:scorefile output3/${LA##*/}.sc \
         -out:pdb true \
-        -out:prefix output_dock3/${LA##*/}_ \
+        -out:prefix output3_dock/${LA##*/}_ \
         -packing:ex1 \
         -packing:ex2 \
         -packing:no_optH \
