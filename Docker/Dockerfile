@@ -24,27 +24,25 @@ RUN apt-get update \
     && locale-gen ja_JP.UTF-8 \
     && echo "export LANG=ja_JP.UTF-8" >> ~/.bashrc
 
-RUN cd /opt && \
-    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    /bin/bash /opt/Miniconda3-latest-Linux-x86_64.sh -b -p "/opt/miniconda3" && \
-    rm /opt/Miniconda3-latest-Linux-x86_64.sh && \
-    export PATH=/opt/miniconda3/bin:$PATH && \
-    echo ". /opt/miniconda3/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    ln -s /opt/miniconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "conda activate" >> ~/.bashrc && \
-    . /opt/miniconda3/etc/profile.d/conda.sh && \
-    conda activate && \
-    conda update conda && \
-    conda create -y -n rosetta-env python=3.9 libffi=3.3 && \
-    conda activate rosetta-env && \
-    conda install pip && \
+RUN apt update && \
+    apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils libffi-dev && \
+    git clone https://github.com/pyenv/pyenv.git /opt/.pyenv && \
+    echo 'export PYENV_ROOT="/opt/.pyenv"' >> ~/.bashrc && \
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv init --path)"' >> ~/.bashrc && \
+    . /root/.bashrc && \
+    pyenv install 3.10.9 && \
+    pyenv global 3.10.9 && \
+    cd /opt && \
+    python3 -m venv pip-env && \
+    . /opt/pip-env/bin/activate && \
     pip install setuptools jupyter flake8 autopep8 && \
     pip install rdkit pandas scipy optuna plotly scikit-learn tqdm matplotlib pubchempy xgboost lightgbm && \
     git clone https://github.com/openbabel/openbabel.git && \
     apt install -y libxml2-dev libboost-all-dev libomp-dev zlib1g-dev libeigen3-dev libcairo2-dev cmake swig && \
     cd openbabel && \
     mkdir build && cd build && \
-    cmake -DENABLE_OPENMP=ON -DBUILD_GUI=OFF -DPYTHON_EXECUTABLE=${HOME}/miniconca3/envs/pip-env/bin/python3 -DPYTHON_BINDINGS=ON -DRUN_SWIG=ON .. && \
+    cmake -DENABLE_OPENMP=ON -DBUILD_GUI=OFF -DPYTHON_EXECUTABLE=/opt/pip-env/bin/python3 -DPYTHON_BINDINGS=ON -DRUN_SWIG=ON .. && \
     make -j 33 && \
     make install && \
     pip install plip && \

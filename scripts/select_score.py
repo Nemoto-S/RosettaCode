@@ -6,8 +6,8 @@ import glob
 import numpy as np
 
 def main(args):
-    ps = glob.glob(args.path+"_dock/*")
-    ps2 = glob.glob(args.path+"/*")
+    ps = glob.glob(args.score_path+"_dock/*")
+    ps2 = glob.glob(args.score_path+"/*")
     filenames = ["/".join(v.split("/")[-2:]) for v in ps]
     ps2_conf = [v.split("_dock_")[0] for v in ps2]
     ps2_conf = set(["_".join(v.split("_")[:-1]) for v in ps2_conf])
@@ -34,7 +34,7 @@ def main(args):
     remove_list = [v for v in filenames if v not in lst]
     for v in remove_list:
         os.remove(v)
-    for v in glob.glob(args.path+"/*"):
+    for v in glob.glob(args.score_path+"/*"):
         if "remain" not in v:
             os.remove(v)
 
