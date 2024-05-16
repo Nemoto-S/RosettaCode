@@ -9,7 +9,7 @@ SCRIPTS=/workspace/Rosetta/scripts
 for P in input_protein/*.pdb; do
     mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
         -s ${P} \
-        -parser:protocol ${SCRIPTS}/relax_empty.xml \ 
+        -parser:protocol ${SCRIPTS}/relax_empty.xml \
         -out:suffix _relaxed \
         -nstruct 1 \
         -out:path:pdb input_protein \

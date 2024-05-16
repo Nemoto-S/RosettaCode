@@ -18,11 +18,12 @@ python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py \
     --mm-as-virt \
     --chain X \
     --clobber
+mv input_ligand/2yfe_ligand_0001.pdb input_ligand/2yfe_ligand.pdb
 # determine ligand center
 center=$(python3 ${SCRIPTS}/center.py input_ligand/2yfe_ligand.pdb)
 center=(${center//,/ })
 
-for P in input_ligand/*.sdf; do
+for P in input_ligand/*_conf.sdf; do
     python3 ${SCRIPTS}/sdf_split.py $P -n 1
     for P2 in ${P%.*}_*.sdf; do
         PA=${P2%.*}
