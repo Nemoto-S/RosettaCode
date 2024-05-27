@@ -23,6 +23,9 @@ mv input_ligand/2yfe_ligand_0001.pdb input_ligand/2yfe_ligand.pdb
 center=$(python3 ${SCRIPTS}/center.py input_ligand/2yfe_ligand.pdb)
 center=(${center//,/ })
 
+mkdir output
+mkdir output_dock
+
 for P in input_ligand/*_conf.sdf; do
     python3 ${SCRIPTS}/sdf_split.py $P -n 1
     for P2 in ${P%.*}_*.sdf; do
@@ -53,7 +56,6 @@ for P in input_ligand/*_conf.sdf; do
         rm ligand_chain_X.*
         rm $P2
     done
-    rm ${P}_*.sdf
 done
 
 # score parse and selection

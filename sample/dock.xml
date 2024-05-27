@@ -40,6 +40,7 @@
     <MOVERS>
         <StartFrom name="start" chain="X">
             <Coordinates x="%%x%%" y="%%y%%" z="%%z%%"/>
+        </StartFrom>
         <Transform name="transform" chain="X" box_size="15.0" move_distance="1.0" angle="45" cycles="5000" repeats="1" temperature="5" initial_perturb="1.0"/>
         <!-- 1段階目はdinstance=5.0, angle=365  2段階目はdistance=1.0,angle=45  3段階目はdistance=0.2,angle=5-->
         <HighResDocker name="high_res_docker" cycles="1" repack_every_Nth="1" scorefxn="ligand_soft_rep" movemap_builder="docking"/>
