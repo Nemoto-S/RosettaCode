@@ -10,9 +10,8 @@ def main(args):
         lines = f.read().split("\n")
     extract = []
     i = 0
-    for v in lines:
-        sp = [x for x in v.split(" ") if x != ""]
-        if v.startswith("HETATM") and sp[4] == args.chain:
+    for j,v in enumerate(lines):
+        if v.startswith("HETATM") and v[21] == args.chain:
             i = 1
             extract.append(v)
         elif i == 1 and v.startswith("TER"):
@@ -21,11 +20,10 @@ def main(args):
             extract.append(v)
     if args.remove_chain:
         pr = []
-        for j,v in enumerate(lines):
+        for v in lines:
+            if v.startswith("HETATM") and v[21] == args.chain:
+                break
             pr.append(v)
-            if v.startswith("TER"):
-                if not lines[j+1].startswith("ATOM"):
-                    break
         with open("protein.pdb","wt") as f:
             f.write("\n".join(pr))
 

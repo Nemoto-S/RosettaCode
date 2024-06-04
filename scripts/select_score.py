@@ -10,7 +10,6 @@ def main(args):
     ps2 = glob.glob(args.score_path+"/*")
     filenames = ["/".join(v.split("/")[-2:]) for v in ps]
     ps2_conf = ["/".join(v.split("/")[-2:]) for v in ps2]
-    ps2_conf = set(["_".join(v.split("_")[:2]) for v in ps2_conf])
 
     remain_list = []
     for x in ps2_conf:
