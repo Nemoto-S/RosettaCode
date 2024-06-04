@@ -18,7 +18,7 @@ python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py \
     --mm-as-virt \
     --chain X \
     --clobber
-center=$(python3 ${SCRIPTS}/center.py input_ligand/2yfe_ligand.pdb)
+center=$(python3 ${SCRIPTS}/center.py input_ligand/2yfe_ligand_0001.pdb)
 center=(${center//,/ })
 
 for P in input_ligand/*_conf.sdf; do
@@ -68,8 +68,7 @@ python3 ${SCRIPTS}/select_score.py \
 for P in output_dock/*.pdb; do
     PA=${P%.*}
     PB=${PA##*/}
-    PC=${PB%_dock_*}
-    PD=${PC%_*}
+    PC=${PB%_conf_*}
     python3 ${SCRIPTS}/extract_ligand.py $P --remove_chain
     python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ligand_chain_X.sdf \
         -p ligand_chain_X \
@@ -80,7 +79,7 @@ for P in output_dock/*.pdb; do
     mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
         -s dock.pdb \
         -extra_res_fa ligand_chain_X.params \
-        -out:file:scorefile output2/${PD}.sc \
+        -out:file:scorefile output2/${PC}.sc \
         -out:pdb true \
         -out:prefix output2_dock/${PB}_ \
         -packing:ex1 \
@@ -106,8 +105,7 @@ python3 ${SCRIPTS}/select_score.py \
 for P in output2_dock/*.pdb; do
     PA=${P%.*}
     PB=${PA##*/}
-    PC=${PB%_dock_*}
-    PD=${PC%_*}
+    PC=${PB%_conf_*}
     python3 ${SCRIPTS}/extract_ligand.py $P --remove_chain
     python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ligand_chain_X.sdf \
         -p ligand_chain_X \
@@ -118,7 +116,7 @@ for P in output2_dock/*.pdb; do
     mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
         -s dock.pdb \
         -extra_res_fa ligand_chain_X.params \
-        -out:file:scorefile output3/${PD}.sc \
+        -out:file:scorefile output3/${PC}.sc \
         -out:pdb true \
         -out:prefix output3_dock/${PB}_ \
         -packing:ex1 \
