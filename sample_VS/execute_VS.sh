@@ -69,19 +69,18 @@ for P in output_dock/*.pdb; do
     PA=${P%.*}
     PB=${PA##*/}
     PC=${PB%_conf_*}
-    python3 ${SCRIPTS}/extract_ligand.py $P --remove_chain
+    python3 ${SCRIPTS}/extract_ligand_pymol.py $P 
     python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ligand_chain_X.sdf \
         -p ligand_chain_X \
         --mm-as-virt \
         --chain X \
         --clobber
-    cat protein.pdb ligand_chain_X_0001.pdb > dock.pdb
     mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
-        -s dock.pdb \
+        -s $P \
         -extra_res_fa ligand_chain_X.params \
         -out:file:scorefile output2/${PC}.sc \
         -out:pdb true \
-        -out:prefix output2_dock/${PB}_ \
+        -out:prefix output2_dock/ \
         -packing:ex1 \
         -packing:ex2 \
         -packing:no_optH false \
@@ -106,19 +105,18 @@ for P in output2_dock/*.pdb; do
     PA=${P%.*}
     PB=${PA##*/}
     PC=${PB%_conf_*}
-    python3 ${SCRIPTS}/extract_ligand.py $P --remove_chain
+    python3 ${SCRIPTS}/extract_ligand_pymol.py $P 
     python3 ${ROSETTA}/scripts/python/public/molfile_to_params.py ligand_chain_X.sdf \
         -p ligand_chain_X \
         --mm-as-virt \
         --chain X \
         --clobber
-    cat protein.pdb ligand_chain_X_0001.pdb > dock.pdb
     mpirun -np 50 --allow-run-as-root ${ROSETTA}/bin/rosetta_scripts.mpi.linuxgccrelease \
-        -s dock.pdb \
+        -s $P \
         -extra_res_fa ligand_chain_X.params \
         -out:file:scorefile output3/${PC}.sc \
         -out:pdb true \
-        -out:prefix output3_dock/${PB}_ \
+        -out:prefix output3_dock/ \
         -packing:ex1 \
         -packing:ex2 \
         -packing:no_optH false \
